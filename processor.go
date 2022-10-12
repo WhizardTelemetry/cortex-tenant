@@ -281,9 +281,7 @@ func (p *processor) processTimeseries(ts *prompb.TimeSeries) (tenant string, err
 	}
 
 	if p.cfg.Tenant.LabelRemove {
-		l := len(ts.Labels)
-		ts.Labels[idx] = ts.Labels[l-1]
-		ts.Labels = ts.Labels[:l-1]
+		ts.Labels = append(ts.Labels[:idx], ts.Labels[idx+1:]...)
 	}
 
 	return
