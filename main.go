@@ -18,13 +18,21 @@ var (
 
 func main() {
 	cfgFile := flag.String("config", "", "Path to a config file")
+	cfgContent := flag.String("config-content", "", "Alternative to 'config' flag (mutually exclusive). Content of Yaml file that contains configuration.")
 	flag.Parse()
 
-	if *cfgFile == "" {
-		log.Fatalf("Config file required")
+	if *cfgFile == "" && *cfgContent == "" {
+		log.Fatalf("Config required")
 	}
 
-	cfg, err := configLoad(*cfgFile)
+	var cfg *config
+	var err error
+	if *cfgFile != "" {
+		cfg, err = configLoad(*cfgFile)
+	} else {
+		cfg, err = configParse([]byte(*cfgContent))
+	}
+
 	if err != nil {
 		log.Fatal(err)
 	}
